@@ -29,11 +29,11 @@
 ## Installation
 
 ```bash
-git clone <https://github.com/EC-Arpita/SmartCV-Analyzerl>
+git clone <https://github.com/EC-Arpita/SmartCV-Analyzer>
 cd SmartCV-Analyzer
-python -m venv env
+python -m venv myenv
 # Windows
 env\Scripts\activate
 # macOS/Linux
-source env/bin/activate
+source myenv/bin/activate
 pip install -r requirements.txt
