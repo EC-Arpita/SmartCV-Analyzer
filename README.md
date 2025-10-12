@@ -21,7 +21,7 @@
 
 ## Tech Stack
 
-- Python: scikit-learn, XGBoost, pandas, numpy, NLTK, SpaCy, PyMuPDF, joblib  
+- Python: scikit-learn, pandas, numpy, NLTK, SpaCy, PyMuPDF, joblib  
 - Frontend: HTML & CSS  
 
 ---
