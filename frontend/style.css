@@ -186,3 +186,40 @@ body {
 .upload-area:focus-within .upload-success {
   display: block;
 }
+/* Add button and upload-area styles */
+#uploadForm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+#uploadForm button {
+  padding: 12px 24px;
+  border: none;
+  background: #1a1a1a;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.3s ease;
+}
+
+#uploadForm button:hover {
+  background: #333;
+}
+
+/* Result section */
+#result-section {
+  margin-top: 30px;
+  padding: 20px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 12px;
+  color: white;
+}
+
+#result-section img {
+  max-width: 100%;
+  height: auto;
+  margin: 10px 0;
+}

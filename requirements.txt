@@ -6,5 +6,5 @@ spacy
 PyMuPDF
 nltk
 joblib
-
+Flask
 

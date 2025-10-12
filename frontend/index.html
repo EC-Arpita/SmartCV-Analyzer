@@ -1,93 +1,107 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SmartCV Analyzer</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SmartCV Analyzer</title>
+<link rel="stylesheet" href="style.css">
+<style>
+/* Existing styles kept same + new for results */
+#uploadForm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+#uploadForm button {
+  padding: 12px 24px;
+  border: none;
+  background: #1a1a1a;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.3s ease;
+}
+#uploadForm button:hover { background: #333; }
+
+#result-section {
+  margin-top: 30px;
+  padding: 20px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 12px;
+  color: white;
+}
+
+#result-section h2 { margin-bottom: 10px; }
+#result-section ul { margin-left: 20px; }
+#result-section img { max-width: 100%; margin: 10px 0; border-radius: 8px; }
+.loading { font-style: italic; margin-top: 10px; }
+</style>
 </head>
 <body>
-  <!-- Main Content -->
-  <div class="main-wrapper">
-    <div class="background-container">
-      <!-- Gradient Background -->
-      <div class="gradient-bg"></div>
+<div class="main-wrapper">
+  <div class="background-container">
+    <div class="gradient-bg"></div>
+    <div class="floating-orbs">
+      <div class="orb orb-1"></div>
+      <div class="orb orb-2"></div>
+      <div class="orb orb-3"></div>
+    </div>
+    <div class="stars-container">
+      <!-- 20 stars -->
+      <div class="star star-1"></div><div class="star star-2"></div>
+      <div class="star star-3"></div><div class="star star-4"></div>
+      <div class="star star-5"></div><div class="star star-6"></div>
+      <div class="star star-7"></div><div class="star star-8"></div>
+      <div class="star star-9"></div><div class="star star-10"></div>
+      <div class="star star-11"></div><div class="star star-12"></div>
+      <div class="star star-13"></div><div class="star star-14"></div>
+      <div class="star star-15"></div><div class="star star-16"></div>
+      <div class="star star-17"></div><div class="star star-18"></div>
+      <div class="star star-19"></div><div class="star star-20"></div>
+    </div>
 
-      <!-- Floating Orbs -->
-      <div class="floating-orbs">
-        <div class="orb orb-1"></div>
-        <div class="orb orb-2"></div>
-        <div class="orb orb-3"></div>
-      </div>
-
-      <!-- Animated Stars -->
-      <div class="stars-container">
-        <div class="star star-1"></div>
-        <div class="star star-2"></div>
-        <div class="star star-3"></div>
-        <div class="star star-4"></div>
-        <div class="star star-5"></div>
-        <div class="star star-6"></div>
-        <div class="star star-7"></div>
-        <div class="star star-8"></div>
-        <div class="star star-9"></div>
-        <div class="star star-10"></div>
-        <div class="star star-11"></div>
-        <div class="star star-12"></div>
-        <div class="star star-13"></div>
-        <div class="star star-14"></div>
-        <div class="star star-15"></div>
-        <div class="star star-16"></div>
-        <div class="star star-17"></div>
-        <div class="star star-18"></div>
-        <div class="star star-19"></div>
-        <div class="star star-20"></div>
-      </div>
-
-      <!-- Content -->
-      <div class="content">
-        <!-- Header -->
-        <header class="header">
-          <div class="header-container">
-            <div class="brand">
-              <div class="brand-icon-wrapper">
-                <div class="brand-icon">
-                  <img src="https://c.animaapp.com/mg26mwq0CiDAio/assets/icon-4.svg" alt="Icon" />
-                </div>
-                <div class="brand-sparkle">
-                  <img src="https://c.animaapp.com/mg26mwq0CiDAio/assets/icon-5.svg" alt="Icon" />
-                </div>
+    <div class="content">
+      <header class="header">
+        <div class="header-container">
+          <div class="brand">
+            <div class="brand-icon-wrapper">
+              <div class="brand-icon">
+                <img src="https://c.animaapp.com/mg26mwq0CiDAio/assets/icon-4.svg" alt="Icon" />
               </div>
-              <div class="brand-text">
-                <h1>SmartCV Analyzer</h1>
-                <p>AI-Powered Career Intelligence</p>
+              <div class="brand-sparkle">
+                <img src="https://c.animaapp.com/mg26mwq0CiDAio/assets/icon-5.svg" alt="Icon" />
               </div>
+            </div>
+            <div class="brand-text">
+              <h1>SmartCV Analyzer</h1>
+              <p>AI-Powered Career Intelligence</p>
             </div>
           </div>
-        </header>
+        </div>
+      </header>
 
-        <!-- Main Content -->
-        <main class="main">
-          <div class="main-container">
-            <!-- Hero Section -->
-            <div class="hero">
-              <div class="hero-icon">
-                <img src="https://c.animaapp.com/mg26mwq0CiDAio/assets/icon-6.svg" alt="Icon" />
-              </div>
-              <h1 class="hero-title">
-                Unlock Your<br />
-                <span class="hero-title-accent">Career Potential</span>
-              </h1>
-              <p class="hero-description">
-                Get instant AI-powered analysis of your resume with personalized job matches, 
-                skill assessments, and career insights to accelerate your professional growth.
-              </p>
+      <main class="main">
+        <div class="main-container">
+          <div class="hero">
+            <div class="hero-icon">
+              <img src="https://c.animaapp.com/mg26mwq0CiDAio/assets/icon-6.svg" alt="Icon" />
             </div>
+            <h1 class="hero-title">
+              Unlock Your<br />
+              <span class="hero-title-accent">Career Potential</span>
+            </h1>
+            <p class="hero-description">
+              Get instant AI-powered analysis of your resume with personalized job matches, 
+              skill assessments, and career insights to accelerate your professional growth.
+            </p>
+          </div>
 
-            <!-- Upload Section -->
-            <div class="upload-section">
-              <label class="upload-area">
-                <input type="file" accept=".pdf,.doc,.docx" />
+          <div class="upload-section">
+            <form id="uploadForm" enctype="multipart/form-data">
+              <div class="upload-area">
+                <input type="file" name="resume" id="resumeInput" required />
                 <div class="upload-content">
                   <div class="upload-icon">
                     <img src="https://c.animaapp.com/mg26mwq0CiDAio/assets/icon-7.svg" alt="Icon" />
@@ -98,108 +112,81 @@
                     <p class="upload-formats">Supports PDF, DOC, and DOCX formats</p>
                   </div>
                 </div>
-                <!-- Floating Icons -->
-                <div class="upload-floating-icons">
-                  <div class="floating-icon floating-icon-1">
-                    <img src="https://c.animaapp.com/mg26mwq0CiDAio/assets/icon-8.svg" alt="Icon" />
-                  </div>
-                  <div class="floating-icon floating-icon-2">
-                    <img src="https://c.animaapp.com/mg26mwq0CiDAio/assets/icon-9.svg" alt="Icon" />
-                  </div>
-                  <div class="floating-icon floating-icon-3">
-                    <img src="https://c.animaapp.com/mg26mwq0CiDAio/assets/icon-10.svg" alt="Icon" />
-                  </div>
-                  <div class="floating-icon floating-icon-4">
-                    <img src="https://c.animaapp.com/mg26mwq0CiDAio/assets/icon-11.svg" alt="Icon" />
-                  </div>
-                </div>
-
-                <!-- CSS-only Progress Bar -->
-                <div class="upload-progress">
-                  <div class="upload-progress-fill"></div>
-                </div>
-
-                <!-- CSS-only Success Message -->
-                <div class="upload-success">
-                  Upload Complete! Your file has been selected.
-                </div>
-              </label>
-            </div>
-
-            <!-- Features Section -->
-            <div class="features">
-              <div class="feature-card">
-                <div class="feature-icon feature-icon-1">
-                  <img src="https://c.animaapp.com/mg26mwq0CiDAio/assets/icon-12.svg" alt="Icon" />
-                </div>
-                <h3>AI Analysis</h3>
-                <p>Advanced AI analyzes your resume structure, content, and market compatibility</p>
               </div>
-              <div class="feature-card">
-                <div class="feature-icon feature-icon-2">
-                  <img src="https://c.animaapp.com/mg26mwq0CiDAio/assets/icon-13.svg" alt="Icon" />
-                </div>
-                <h3>Job Matching</h3>
-                <p>Get matched with relevant job opportunities based on your skills and experience</p>
-              </div>
-              <div class="feature-card">
-                <div class="feature-icon feature-icon-3">
-                  <img src="https://c.animaapp.com/mg26mwq0CiDAio/assets/icon-14.svg" alt="Icon" />
-                </div>
-                <h3>Career Insights</h3>
-                <p>Receive personalized feedback and analytics to accelerate your career growth</p>
-              </div>
-            </div>
-
-            <!-- Privacy Section -->
-            <div class="privacy-section">
-              <div class="privacy-card">
-                <div class="privacy-header">
-                  <img src="https://c.animaapp.com/mg26mwq0CiDAio/assets/icon-15.svg" alt="Icon" />
-                  <h4>Your Privacy is Protected</h4>
-                </div>
-                <p>
-                  Your resume is processed securely with end-to-end encryption. We never store your 
-                  personal data permanently, and all analysis is performed with the highest privacy standards.
-                </p>
-                <div class="privacy-features">
-                  <div class="privacy-feature">
-                    <img src="https://c.animaapp.com/mg26mwq0CiDAio/assets/icon-16.svg" alt="Icon" />
-                    <span>Encrypted Processing</span>
-                  </div>
-                  <div class="privacy-feature">
-                    <img src="https://c.animaapp.com/mg26mwq0CiDAio/assets/icon-16.svg" alt="Icon" />
-                    <span>No Data Storage</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
+              <button type="submit" class="nav-cta">Analyze Resume</button>
+              <p id="loading" class="loading" style="display:none;">Analyzing resume...</p>
+            </form>
           </div>
-        </main>
 
-        <!-- Footer -->
-        <footer class="footer">
-          <div class="footer-container">
-            <div class="footer-features">
-              <div class="footer-feature">
-                <img src="https://c.animaapp.com/mg26mwq0CiDAio/assets/icon-17.svg" alt="Icon" />
-                <span>Instant Analysis</span>
-              </div>
-              <div class="footer-feature">
-                <img src="https://c.animaapp.com/mg26mwq0CiDAio/assets/icon-18.svg" alt="Icon" />
-                <span>Job Matching</span>
-              </div>
-              <div class="footer-feature">
-                <img src="https://c.animaapp.com/mg26mwq0CiDAio/assets/icon-19.svg" alt="Icon" />
-                <span>Career Insights</span>
-              </div>
-            </div>
-            <p class="footer-tagline">Transform your career with intelligent resume analysis</p>
+          <div id="result-section" class="features">
+            <!-- Results injected here -->
           </div>
-        </footer>
-      </div>
+
+        </div>
+      </main>
+
+      <footer class="footer">
+        <div class="footer-container">
+          <p class="footer-tagline">Transform your career with intelligent resume analysis</p>
+        </div>
+      </footer>
     </div>
   </div>
+</div>
+
+<script>
+const form = document.getElementById('uploadForm');
+const resultSection = document.getElementById('result-section');
+const loadingText = document.getElementById('loading');
+
+form.addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  const fileInput = document.getElementById('resumeInput');
+  if(fileInput.files.length === 0) return alert("Please select a file!");
+  const file = fileInput.files[0];
+
+  loadingText.style.display = 'block';
+  resultSection.innerHTML = '';
+
+  const formData = new FormData();
+  formData.append('resume', file);
+
+  try{
+    const res = await fetch('http://127.0.0.1:5000/analyze',{
+      method: 'POST',
+      body: formData
+    });
+    const data = await res.json();
+    loadingText.style.display = 'none';
+
+    if(data.error){
+      resultSection.innerHTML = `<p>${data.error}</p>`;
+      return;
+    }
+
+    let html = `<h2>Predicted Job Role: ${data.predicted_role}</h2>`;
+    html += `<p>Suitability Score: ${data.suitability_score}%</p>`;
+    html += `<h3>Career Opportunities:</h3><ul>`;
+    data.career_opportunities.forEach(role=>{
+      html += `<li>${role}</li>`;
+    });
+    html += `</ul><h3>Feedback:</h3><ul>`;
+    data.feedback.forEach(fb=>{
+      html += `<li>${fb}</li>`;
+    });
+    html += `</ul>`;
+    html += `<h3>Analytics Charts:</h3>`;
+    html += `<img src="data:image/png;base64,${data.charts.word_count_plot}" alt="Word Count Chart"/>`;
+    html += `<img src="data:image/png;base64,${data.charts.confidence_plot}" alt="Confidence Chart"/>`;
+
+    resultSection.innerHTML = html;
+
+  }catch(err){
+    loadingText.style.display = 'none';
+    resultSection.innerHTML = `<p>Error analyzing resume. Please try again.</p>`;
+    console.error(err);
+  }
+});
+</script>
 </body>
 </html>
