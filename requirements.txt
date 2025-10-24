@@ -7,4 +7,6 @@ PyMuPDF
 nltk
 joblib
 Flask
+seaborn 
+matplotlib
 

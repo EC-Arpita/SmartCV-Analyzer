@@ -14,6 +14,10 @@ from xgboost import XGBClassifier
 import joblib
 from nltk.corpus import stopwords
 import nltk
+import matplotlib.pyplot as plt  # Added for generating graph data
+import seaborn as sns  # Added for generating graph data
+import base64  # Added for sending graph images to frontend
+from io import BytesIO  # Added for in-memory image handling
 
 # -----------------------
 # Setup and Config
@@ -51,19 +55,65 @@ def clean_text(text):
     return ' '.join([word for word in text.split() if word not in stop_words])
 
 def extract_skills(text):
-    """Rule-based skill extraction."""
-    common_skills = [
+    """Rule-based skill extraction. Updated for more general skills."""
+    technical_skills = [
         'python', 'java', 'c++', 'machine learning', 'deep learning',
         'data analysis', 'nlp', 'tensorflow', 'pytorch', 'sql', 'flask',
-        'django', 'xgboost', 'excel', 'powerbi', 'tableau',
-        'communication', 'leadership', 'problem solving', 'data visualization'
+        'django', 'xgboost', 'excel', 'powerbi', 'tableau', 'html', 'css', 'javascript'
     ]
-    found = [s for s in common_skills if s in text]
-    missing = [s for s in common_skills if s not in text]
-    return found, missing
+    soft_skills = [
+        'communication', 'leadership', 'problem solving', 'teamwork', 'adaptability',
+        'critical thinking', 'time management', 'data visualization'
+    ]
+    
+    all_skills = technical_skills + soft_skills
+
+    found_tech = [s for s in technical_skills if s in text]
+    found_soft = [s for s in soft_skills if s in text]
+    found = found_tech + found_soft
+
+    missing_tech = [s for s in technical_skills if s not in text]
+    missing_soft = [s for s in soft_skills if s not in text]
+    missing = missing_tech + missing_soft
+    
+    return found, missing, found_soft  # Return soft skills for personalized feedback
+
+def generate_graphs(predicted_jobs, found_skills, missing_skills):
+    """Generates base64 encoded images for the career analytics dashboard."""
+    graph_data = {}
+
+    # 1. Skills Match vs. Missing Skills (Bar Chart)
+    plt.figure(figsize=(7, 5))
+    sns.set_style("whitegrid")
+    labels = ['Matched Skills', 'Missing Skills']
+    counts = [len(found_skills), len(missing_skills)]
+    sns.barplot(x=labels, y=counts, palette=["#4CAF50", "#F44336"])
+    plt.title('Skill Coverage Analysis')
+    plt.ylabel('Count')
+    plt.tight_layout()
+    buffer = BytesIO()
+    plt.savefig(buffer, format='png')
+    buffer.seek(0)
+    graph_data['skills_bar_chart'] = base64.b64encode(buffer.getvalue()).decode('utf-8')
+    plt.close()
+
+    # 2. Top Predicted Jobs (Pie Chart)
+    plt.figure(figsize=(7, 5))
+    job_labels = [j['job'] for j in predicted_jobs]
+    job_scores = [j['score'] for j in predicted_jobs]
+    plt.pie(job_scores, labels=job_labels, autopct='%1.1f%%', startangle=90, colors=sns.color_palette("viridis", len(job_labels)))
+    plt.title('Suitability Score Distribution (Top 3 Roles)')
+    plt.tight_layout()
+    buffer = BytesIO()
+    plt.savefig(buffer, format='png')
+    buffer.seek(0)
+    graph_data['jobs_pie_chart'] = base64.b64encode(buffer.getvalue()).decode('utf-8')
+    plt.close()
+    
+    return graph_data
 
 # -----------------------
-# Model Management
+# Model Management (Unchanged)
 # -----------------------
 def load_or_train_model():
     """Loads model if exists, else trains it."""
@@ -128,27 +178,76 @@ def upload_resume():
     clean_resume = clean_text(resume_text)
 
     X_vec = vectorizer.transform([clean_resume])
-    y_pred = model.predict(X_vec)[0]
-    predicted_job = label_encoder.inverse_transform([y_pred])[0]
-
+    
+    # --- UPDATED: Predict Top 3 Jobs ---
     proba = model.predict_proba(X_vec)[0]
-    suitability_score = round(float(np.max(proba)) * 100, 2)
+    
+    # Get top 3 predicted job indices
+    top_3_indices = np.argsort(proba)[::-1][:3]
+    predicted_jobs_raw = label_encoder.inverse_transform(top_3_indices)
+    predicted_job_scores = proba[top_3_indices]
+    
+    predicted_jobs = []
+    for job, score in zip(predicted_jobs_raw, predicted_job_scores):
+        predicted_jobs.append({
+            "job": job,
+            "score": round(float(score) * 100, 2)
+        })
+    
+    predicted_job = predicted_jobs[0]["job"]
+    suitability_score = predicted_jobs[0]["score"]  # Use the score of the top job
+    
+    # --- UPDATED: Skill Extraction and Feedback Logic ---
+    found_skills, missing_skills, found_soft_skills = extract_skills(clean_resume)
 
-    found_skills, missing_skills = extract_skills(clean_resume)
-
-    if suitability_score > 80:
-        feedback = "Excellent fit! Your resume strongly aligns with this role."
-    elif suitability_score > 60:
-        feedback = "Good fit. Consider improving your skill coverage."
+    # 1. Personalized Feedback (3 Points)
+    personalized_feedback = []
+    if 'python' in found_skills or 'java' in found_skills:
+        personalized_feedback.append("Excellent work! Your core programming skills are well highlighted, a crucial aspect for technical roles.")
     else:
-        feedback = "Needs improvement. Add more relevant skills and experience."
+        personalized_feedback.append(f"Consider adding or detailing experience with core technical skills like Python or Java for competitive roles.")
+    
+    if 'data visualization' in found_skills and ('powerbi' in found_skills or 'tableau' in found_skills):
+        personalized_feedback.append("Your data visualization and tool knowledge is a strong asset; make sure to quantify your achievements using these tools.")
+    elif len(found_soft_skills) < 3:
+        personalized_feedback.append("Your soft skills (e.g., communication, leadership) are important. Try to integrate them more explicitly into your experience section.")
+    else:
+        personalized_feedback.append("You have a good mix of technical and soft skills. Focus on tailoring them to the specific job description.")
+
+    if len(missing_skills) > 5:
+        personalized_feedback.append(f"You are currently missing {len(missing_skills)} key skills. Focus on training in areas like {', '.join(missing_skills[:2])} to improve your score.")
+    else:
+        personalized_feedback.append("Minimal missing skills detected. A slight boost in domain-specific keywords will further enhance your profile.")
+
+    # 2. Default/General Feedback (5 Points)
+    default_feedback = [
+        "Ensure your contact information (email, phone) is accurate and easily scannable.",
+        "Use strong action verbs at the beginning of bullet points in your experience section.",
+        "Quantify your achievements! Use numbers, percentages, and dollar amounts to show impact.",
+        "Review your resume for consistent formatting and proper use of headings.",
+        "Keep your resume concise and target it specifically to the job role you are applying for."
+    ]
+
+    # 3. Overall Feedback (The original single feedback logic, adapted)
+    if suitability_score > 80:
+        overall_feedback = "Excellent fit! Your resume strongly aligns with this role."
+    elif suitability_score > 60:
+        overall_feedback = "Good fit. Consider improving your skill coverage."
+    else:
+        overall_feedback = "Needs improvement. Add more relevant skills and experience."
+
+    # --- UPDATED: Career Analytics Dashboard Data ---
+    graph_images = generate_graphs(predicted_jobs, found_skills, missing_skills)
 
     result = {
-        "predicted_job": predicted_job,
+        "predicted_jobs": predicted_jobs,
         "suitability_score": suitability_score,
-        "feedback": feedback,
+        "overall_feedback": overall_feedback,
+        "personalized_feedback": personalized_feedback,
+        "default_feedback": default_feedback,
         "match_skills": found_skills,
-        "missing_skills": missing_skills
+        "missing_skills": missing_skills,
+        "career_analytics_dashboard_data": graph_images
     }
 
     return jsonify(result)
@@ -162,15 +261,13 @@ def get_results():
             return jsonify(json.load(f))
     else:
         return jsonify([])
-    
+
 @app.route("/")
 def home():
     return "✅ SmartCV Analyzer API is running! Use /upload to POST resumes."
 
-
 # -----------------------
-# Run Flask App
+# Run Flask App 
 # -----------------------
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=5000)
-
