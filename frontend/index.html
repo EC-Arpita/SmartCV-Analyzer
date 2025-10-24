@@ -7,24 +7,19 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Notification Container -->
   <div id="notificationContainer" class="notification-container"></div>
 
-  <!-- Main Wrapper -->
   <div class="main-wrapper">
     <div class="background-container">
       <div class="gradient-bg"></div>
 
-      <!-- Floating Orbs -->
       <div class="floating-orbs">
         <div class="orb orb-1"></div>
         <div class="orb orb-2"></div>
         <div class="orb orb-3"></div>
       </div>
 
-      <!-- Stars -->
       <div class="stars-container">
-        <!-- 20 stars -->
         <div class="star star-1"></div>
         <div class="star star-2"></div>
         <div class="star star-3"></div>
@@ -47,14 +42,17 @@
         <div class="star star-20"></div>
       </div>
 
-      <!-- Content -->
       <div class="content">
         <header class="header">
           <div class="header-container">
             <div class="brand">
               <div class="brand-icon-wrapper">
-                <div class="brand-icon"><img src="https://c.animaapp.com/mg26mwq0CiDAio/assets/icon-4.svg" alt="Icon"></div>
-                <div class="brand-sparkle"><img src="https://c.animaapp.com/mg26mwq0CiDAio/assets/icon-5.svg" alt="Icon"></div>
+                <div class="brand-icon">
+                  <img src="https://c.animaapp.com/mg26mwq0CiDAio/assets/icon-4.svg" alt="Icon">
+                </div>
+                <div class="brand-sparkle">
+                  <img src="https://c.animaapp.com/mg26mwq0CiDAio/assets/icon-5.svg" alt="Icon">
+                </div>
               </div>
               <div class="brand-text">
                 <h1>SmartCV Analyzer</h1>
@@ -66,8 +64,6 @@
 
         <main class="main">
           <div class="main-container">
-
-            <!-- Hero Section -->
             <div class="hero">
               <div class="hero-icon">
                 <img src="https://c.animaapp.com/mg26mwq0CiDAio/assets/icon-6.svg" alt="Icon">
@@ -81,7 +77,6 @@
               </p>
             </div>
 
-            <!-- Upload Section -->
             <div class="upload-section">
               <div class="upload-area" id="uploadArea">
                 <input type="file" id="fileInput" accept=".pdf,.doc,.docx">
@@ -98,24 +93,69 @@
               </div>
             </div>
 
-            <!-- Result Section -->
             <div id="resultContainer" class="result-container" style="display: none;">
               <h2>Resume Analysis Result</h2>
-              <div class="result-row"><strong>Predicted Job:</strong> <span id="predictedJob"></span></div>
-              <div class="result-row"><strong>Suitability Score:</strong> <span id="suitabilityScore"></span></div>
-              <div class="result-row"><strong>Feedback:</strong> <span id="feedback"></span></div>
-              <div class="result-row"><strong>Matched Skills:</strong> <span id="matchSkills"></span></div>
-              <div class="result-row"><strong>Missing Skills:</strong> <span id="missingSkills"></span></div>
-            </div>
 
+              <div class="analysis-grid">
+                <div class="card score-card">
+                  <h3>Overall Suitability</h3>
+                  <p class="main-score" id="suitabilityScore">--</p>
+                  <p class="main-prediction">Best Match: <span id="predictedJob">--</span></p>
+                  <p class="overall-feedback-summary" id="overallFeedbackSummary"></p>
+                </div>
+
+                <div class="card predictions-card">
+                  <h3>Top Career Pathways</h3>
+                  <div id="topPredictionsList" class="predictions-list"></div>
+                </div>
+
+                <div class="card skills-card">
+                  <h3>Skill Assessment</h3>
+                  <div class="skill-group matched">
+                    <h4>✅ Matched Skills:</h4>
+                    <p id="matchSkills">--</p>
+                  </div>
+                  <div class="skill-group missing">
+                    <h4>❌ Missing Skills:</h4>
+                    <p id="missingSkills">--</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card feedback-card full-width">
+                <h3>Detailed Resume Feedback</h3>
+                <div class="feedback-columns">
+                  <div class="personalized-feedback">
+                    <h4>🎯 Personalized Recommendations (3 Points)</h4>
+                    <ul id="personalizedFeedbackList"></ul>
+                  </div>
+                  <div class="general-feedback">
+                    <h4>💡 General Best Practices (5 Points)</h4>
+                    <ul id="defaultFeedbackList"></ul>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card dashboard-card full-width">
+                <h3>Career Analytics Dashboard</h3>
+                <div class="dashboard-graphs">
+                  <div class="graph-box">
+                    <h4>Skill Coverage Analysis (Bar Chart)</h4>
+                    <img id="skillsBarChart" src="data:image/png;base64," alt="Skill Coverage Bar Chart">
+                  </div>
+                  <div class="graph-box">
+                    <h4>Suitability Score Distribution (Pie Chart)</h4>
+                    <img id="jobsPieChart" src="data:image/png;base64," alt="Top Predicted Jobs Pie Chart">
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </main>
-
       </div>
     </div>
   </div>
 
-  <!-- JS -->
   <script src="script.js"></script>
 </body>
 </html>

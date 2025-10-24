@@ -130,7 +130,7 @@ def load_or_train_model():
 
     # Train new model
     print("🧠 Training new XGBoost model...")
-    dataset_path = os.path.join(os.path.dirname(__file__), "..", "processed", "custom_resume_dataset_cleaned.csv")
+    dataset_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "processed", "custom_resume_dataset_cleaned.csv")
     if not os.path.exists(dataset_path):
         raise FileNotFoundError(f"❌ Dataset not found: {dataset_path}")
 
