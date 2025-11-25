@@ -78,16 +78,22 @@ def extract_skills(text):
     
     return found, missing, found_soft  # Return soft skills for personalized feedback
 
+
 def generate_graphs(predicted_jobs, found_skills, missing_skills):
     """Generates base64 encoded images for the career analytics dashboard."""
     graph_data = {}
 
-    # 1. Skills Match vs. Missing Skills (Bar Chart)
+    # Colors derived from style.css for better visual consistency
+    MATCHED_COLOR = '#4ade80'  # Green for matched skills
+    MISSING_COLOR = '#f87171'  # Red for missing skills
+    PIE_CHART_PALETTE = 'magma'  # Palette that complements the app's deep purple/blue theme
+
+    # 1. Skills Match vs. Missing Skills
     plt.figure(figsize=(7, 5))
     sns.set_style("whitegrid")
     labels = ['Matched Skills', 'Missing Skills']
     counts = [len(found_skills), len(missing_skills)]
-    sns.barplot(x=labels, y=counts, palette=["#4CAF50", "#F44336"])
+    sns.barplot(x=labels, y=counts, palette=[MATCHED_COLOR, MISSING_COLOR])
     plt.title('Skill Coverage Analysis')
     plt.ylabel('Count')
     plt.tight_layout()
@@ -97,11 +103,11 @@ def generate_graphs(predicted_jobs, found_skills, missing_skills):
     graph_data['skills_bar_chart'] = base64.b64encode(buffer.getvalue()).decode('utf-8')
     plt.close()
 
-    # 2. Top Predicted Jobs (Pie Chart)
+    # 2. Top Predicted Jobs 
     plt.figure(figsize=(7, 5))
     job_labels = [j['job'] for j in predicted_jobs]
     job_scores = [j['score'] for j in predicted_jobs]
-    plt.pie(job_scores, labels=job_labels, autopct='%1.1f%%', startangle=90, colors=sns.color_palette("viridis", len(job_labels)))
+    plt.pie(job_scores, labels=job_labels, autopct='%1.1f%%', startangle=90, colors=sns.color_palette(PIE_CHART_PALETTE, len(job_labels)))
     plt.title('Suitability Score Distribution (Top 3 Roles)')
     plt.tight_layout()
     buffer = BytesIO()
@@ -113,7 +119,7 @@ def generate_graphs(predicted_jobs, found_skills, missing_skills):
     return graph_data
 
 # -----------------------
-# Model Management (Unchanged)
+# Model Management
 # -----------------------
 def load_or_train_model():
     """Loads model if exists, else trains it."""
@@ -122,17 +128,17 @@ def load_or_train_model():
     encoder_path = os.path.join(MODEL_DIR, "label_encoder.joblib")
 
     if all(os.path.exists(p) for p in [model_path, vectorizer_path, encoder_path]):
-        print("✅ Using existing trained model...")
+        print(" Using existing trained model...")
         model = joblib.load(model_path)
         vectorizer = joblib.load(vectorizer_path)
         label_encoder = joblib.load(encoder_path)
         return model, vectorizer, label_encoder
 
     # Train new model
-    print("🧠 Training new XGBoost model...")
+    print("Training new XGBoost model...")
     dataset_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "processed", "custom_resume_dataset_cleaned.csv")
     if not os.path.exists(dataset_path):
-        raise FileNotFoundError(f"❌ Dataset not found: {dataset_path}")
+        raise FileNotFoundError(f" Dataset not found: {dataset_path}")
 
     df = pd.read_csv(dataset_path)
     df.dropna(subset=["resume_text", "job_category"], inplace=True)
@@ -148,7 +154,7 @@ def load_or_train_model():
     joblib.dump(model, model_path)
     joblib.dump(vectorizer, vectorizer_path)
     joblib.dump(label_encoder, encoder_path)
-    print("✅ Model trained and saved successfully!")
+    print(" Model trained and saved successfully!")
 
     return model, vectorizer, label_encoder
 
@@ -179,7 +185,7 @@ def upload_resume():
 
     X_vec = vectorizer.transform([clean_resume])
     
-    # --- UPDATED: Predict Top 3 Jobs ---
+    # --- Predict Top 3 Jobs ---
     proba = model.predict_proba(X_vec)[0]
     
     # Get top 3 predicted job indices
@@ -197,10 +203,10 @@ def upload_resume():
     predicted_job = predicted_jobs[0]["job"]
     suitability_score = predicted_jobs[0]["score"]  # Use the score of the top job
     
-    # --- UPDATED: Skill Extraction and Feedback Logic ---
+    # --- Skill Extraction and Feedback Logic ---
     found_skills, missing_skills, found_soft_skills = extract_skills(clean_resume)
 
-    # 1. Personalized Feedback (3 Points)
+    #  Personalized Feedback (3 Points)
     personalized_feedback = []
     if 'python' in found_skills or 'java' in found_skills:
         personalized_feedback.append("Excellent work! Your core programming skills are well highlighted, a crucial aspect for technical roles.")
@@ -228,7 +234,7 @@ def upload_resume():
         "Keep your resume concise and target it specifically to the job role you are applying for."
     ]
 
-    # 3. Overall Feedback (The original single feedback logic, adapted)
+    #  Overall Feedback (The original single feedback logic, adapted)
     if suitability_score > 80:
         overall_feedback = "Excellent fit! Your resume strongly aligns with this role."
     elif suitability_score > 60:
@@ -236,7 +242,7 @@ def upload_resume():
     else:
         overall_feedback = "Needs improvement. Add more relevant skills and experience."
 
-    # --- UPDATED: Career Analytics Dashboard Data ---
+    # --- Career Analytics Dashboard Data ---
     graph_images = generate_graphs(predicted_jobs, found_skills, missing_skills)
 
     result = {
