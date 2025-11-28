@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-  // --- DOM Element Selectors ---
+  // DOM Element Selectors 
   const uploadArea = document.getElementById('uploadArea');
   const fileInput = document.getElementById('fileInput');
   const resultContainer = document.getElementById('resultContainer');
@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const skillsBarChart = document.getElementById('skillsBarChart');
   const jobsPieChart = document.getElementById('jobsPieChart');
 
-  // --- Event Listeners ---
+  // Event Listeners 
   uploadArea.addEventListener('click', () => fileInput.click());
 
   // Drag & Drop
@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (e.target.files.length > 0) handleFile(e.target.files[0]);
   });
 
-  // --- Handle uploaded file ---
+  // Handle uploaded file 
   function handleFile(file) {
     const allowedTypes = [
       'application/pdf',
@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', function() {
       });
   }
 
-  // --- Helper Functions for Display ---
+  //  Helper Functions for Display 
   function populateList(element, items, isPrediction = false) {
     element.innerHTML = '';
     if (items && items.length > 0) {
@@ -121,7 +121,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  // --- Display analysis result ---
+  // Display analysis result
   function displayResult(data) {
     const topJob = data.predicted_jobs && data.predicted_jobs.length > 0
       ? data.predicted_jobs[0].job
@@ -148,7 +148,7 @@ document.addEventListener('DOMContentLoaded', function() {
     resultContainer.scrollIntoView({ behavior: 'smooth' });
   }
 
-  // --- Show notifications ---
+  // Show notifications
   function showNotification(message, type = 'info') {
     const notif = document.createElement('div');
     notif.className = `notification ${type}`;

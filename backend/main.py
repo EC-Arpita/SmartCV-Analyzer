@@ -19,9 +19,9 @@ import seaborn as sns  # Added for generating graph data
 import base64  # Added for sending graph images to frontend
 from io import BytesIO  # Added for in-memory image handling
 
-# -----------------------
+
 # Setup and Config
-# -----------------------
+
 nltk.download('stopwords', quiet=True)
 nlp = spacy.load("en_core_web_sm")
 stop_words = set(stopwords.words('english'))
@@ -35,9 +35,9 @@ os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 MODEL_DIR = os.path.join(os.path.dirname(__file__), "models")
 os.makedirs(MODEL_DIR, exist_ok=True)
 
-# -----------------------
+
 # Helper Functions
-# -----------------------
+
 def extract_text(file_path):
     """Extract text from PDF or DOCX."""
     text = ""
@@ -86,7 +86,7 @@ def generate_graphs(predicted_jobs, found_skills, missing_skills):
     # Colors derived from style.css for better visual consistency
     MATCHED_COLOR = '#4ade80'  # Green for matched skills
     MISSING_COLOR = '#f87171'  # Red for missing skills
-    PIE_CHART_PALETTE = 'magma'  # Palette that complements the app's deep purple/blue theme
+    PIE_CHART_PALETTE = 'magma'  # Palette that complements the app's theme
 
     # 1. Skills Match vs. Missing Skills
     plt.figure(figsize=(7, 5))
@@ -118,9 +118,9 @@ def generate_graphs(predicted_jobs, found_skills, missing_skills):
     
     return graph_data
 
-# -----------------------
+
 # Model Management
-# -----------------------
+
 def load_or_train_model():
     """Loads model if exists, else trains it."""
     model_path = os.path.join(MODEL_DIR, "xgb_model.joblib")
@@ -161,9 +161,9 @@ def load_or_train_model():
 # Load or train model
 model, vectorizer, label_encoder = load_or_train_model()
 
-# -----------------------
+
 # API Routes
-# -----------------------
+
 @app.route("/upload", methods=["POST"])
 def upload_resume():
     """Endpoint to handle resume upload and analysis."""
@@ -185,7 +185,7 @@ def upload_resume():
 
     X_vec = vectorizer.transform([clean_resume])
     
-    # --- Predict Top 3 Jobs ---
+    # Predict Top 3 Jobs 
     proba = model.predict_proba(X_vec)[0]
     
     # Get top 3 predicted job indices
@@ -203,7 +203,7 @@ def upload_resume():
     predicted_job = predicted_jobs[0]["job"]
     suitability_score = predicted_jobs[0]["score"]  # Use the score of the top job
     
-    # --- Skill Extraction and Feedback Logic ---
+    # Skill Extraction and Feedback Logic 
     found_skills, missing_skills, found_soft_skills = extract_skills(clean_resume)
 
     #  Personalized Feedback (3 Points)
@@ -234,7 +234,7 @@ def upload_resume():
         "Keep your resume concise and target it specifically to the job role you are applying for."
     ]
 
-    #  Overall Feedback (The original single feedback logic, adapted)
+    #  Overall Feedback 
     if suitability_score > 80:
         overall_feedback = "Excellent fit! Your resume strongly aligns with this role."
     elif suitability_score > 60:
@@ -242,7 +242,7 @@ def upload_resume():
     else:
         overall_feedback = "Needs improvement. Add more relevant skills and experience."
 
-    # --- Career Analytics Dashboard Data ---
+    # Career Analytics Dashboard Data 
     graph_images = generate_graphs(predicted_jobs, found_skills, missing_skills)
 
     result = {
@@ -270,7 +270,7 @@ def get_results():
 
 @app.route("/")
 def home():
-    return "✅ SmartCV Analyzer API is running! Use /upload to POST resumes."
+    return " SmartCV Analyzer API is running! Use /upload to POST resumes."
 
 # -----------------------
 # Run Flask App 
