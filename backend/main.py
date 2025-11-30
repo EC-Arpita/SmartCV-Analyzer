@@ -9,7 +9,8 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS  # <-- Enable CORS
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.preprocessing import LabelEncoder
-from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.metrics import accuracy_score
+from sklearn.model_selection import train_test_split
 from xgboost import XGBClassifier
 import joblib
 from nltk.corpus import stopwords
@@ -132,6 +133,16 @@ def load_or_train_model():
         model = joblib.load(model_path)
         vectorizer = joblib.load(vectorizer_path)
         label_encoder = joblib.load(encoder_path)
+
+        dataset_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "processed", "custom_resume_dataset_cleaned.csv")
+        df = pd.read_csv(dataset_path)
+        df.dropna(subset=["resume_text", "job_category"], inplace=True)
+        X = vectorizer.transform(df["resume_text"].astype(str))
+        y = label_encoder.transform(df["job_category"])
+        
+        y_pred = model.predict(X)
+        accuracy = accuracy_score(y, y_pred)
+        print(f" Loaded Model Training Accuracy: {accuracy:.4f}")
         return model, vectorizer, label_encoder
 
     # Train new model
@@ -148,8 +159,23 @@ def load_or_train_model():
     label_encoder = LabelEncoder()
     y = label_encoder.fit_transform(df["job_category"])
 
+    # Split the data 80% for training, 20% for testing
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.2, random_state=42, stratify=y
+    )
+
     model = XGBClassifier(use_label_encoder=False, eval_metric="mlogloss", verbosity=0)
-    model.fit(X, y)
+    model.fit(X_train, y_train)
+
+    # Calculate and print TRAINING Accuracy
+    y_train_pred = model.predict(X_train)
+    train_accuracy = accuracy_score(y_train, y_train_pred)
+    print(f" New Model Training Accuracy: {train_accuracy:.4f}")
+
+    # Calculate and print TEST Accuracy 
+    y_test_pred = model.predict(X_test)
+    test_accuracy = accuracy_score(y_test, y_test_pred)
+    print(f" New Model TEST Accuracy: {test_accuracy:.4f}")
 
     joblib.dump(model, model_path)
     joblib.dump(vectorizer, vectorizer_path)
