@@ -94,7 +94,7 @@ def generate_graphs(predicted_jobs, found_skills, missing_skills):
     sns.set_style("whitegrid")
     labels = ['Matched Skills', 'Missing Skills']
     counts = [len(found_skills), len(missing_skills)]
-    sns.barplot(x=labels, y=counts, palette=[MATCHED_COLOR, MISSING_COLOR])
+    sns.barplot(x=labels, y=counts, palette=[MATCHED_COLOR, MISSING_COLOR],legend=False)
     plt.title('Skill Coverage Analysis')
     plt.ylabel('Count')
     plt.tight_layout()
